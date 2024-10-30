@@ -153,6 +153,9 @@ export function makePlayer(k) {
           }
         });
       },
+      enableDoubleJump() {
+        this.numJumps = 2;
+      }
     },
   ]);
 }
