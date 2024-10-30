@@ -84,6 +84,39 @@ export function makeBoss(k, initialPos) {
             k.play("boom")
             this.hurt(1);
         })
+
+        this.onAnimEnd((anim) => {
+            switch (anim){
+                case "open-fire":
+                    this.enterState("fire");
+                    break;
+                case "shut-fire":
+                    this.enterState("follow");
+                    break;
+                case "explode":
+                    k.destroy(this);
+                    break;
+                    default:
+            }
+        })
+
+        this.on("explode", () => {
+            this.enterState("explode");
+            this.collisionIgnore = ["player"];
+            this.unuse("body");
+            k.play("boom");
+            this.play("explode");
+            state.set(statePropsEnum.isBossDefeated, true);
+            state.set(statePropsEnum.isDoubleJumpUnlocked, true);
+            player.enableDoubleJump();
+            k.play("notify");
+            const notification = k.add(
+                makeNotificationBox(
+                    k, "you unlocked double jump!"
+                )
+            )
+            k.wait(3, () => notification.close())
+        })
       },
     },
   ]);
