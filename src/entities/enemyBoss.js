@@ -44,6 +44,7 @@ export function makeBoss(k, initialPos) {
         });
 
         this.onStateEnter("fire", () => {
+            if (this.curAnim() !== "fire") this.play("fire");
             const flamethrowerSound = k.play("flamethrower");
             const fireHitbox = this.add([
                 k.area({ shape: new k.Rect(k.vec2(0), 70, 10)}),
@@ -59,11 +60,31 @@ export function makeBoss(k, initialPos) {
             })
 
             k.wait(this.fireDuration, () => {
-                
+                flamethrowerSound.stop();
+                this.enterState("shut-fire");
             })
         })
+
+        this.onStateEnd("fire", () => {
+            const fireHitbox = k.get("fire-hitbox", { recursive: true })[0];
+            if(fireHitbox) k.destroy(fireHitbox);
+        })
+
+        // this.onStateUpdate("fire", () => {
+        //     if(this.curAnim() !== "fire") this.play("fire");
+        // })
+
+        this.onStateEnter("shut-fire", () => {
+            this.play("shut-fire");
+        })
       },
-      setEvents() {},
+      setEvents() {
+        const player = k.get("player", { recursive: true })[0];
+        this.onCollide("sword-hitbox", () => {
+            k.play("boom")
+            this.hurt(1);
+        })
+      },
     },
   ]);
 }
