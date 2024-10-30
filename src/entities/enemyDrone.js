@@ -54,7 +54,7 @@ export function makeDrone(k, initialPos) {
 
         this.onStateEnter("alert", async () => {
           await k.wait(1);
-          if(this.pos.dist(player.pos) < this.range){
+          if (this.pos.dist(player.pos) < this.range) {
             this.enterState("attack");
             return;
           }
@@ -63,14 +63,51 @@ export function makeDrone(k, initialPos) {
         });
 
         this.onStateUpdate("attack", () => {
-            if(this.pos.dist(player.pos) > this.range){
-                this.enterState("alert")
-                return;
-            }
+          if (this.pos.dist(player.pos) > this.range) {
+            this.enterState("alert");
+            return;
+          }
 
-            this.flipX = player.pos.x < this.pos.x;
-            this.moveTo(k.vec2(player.pos.x, player.pos.y + 12), this.pursuitSpeed);
-        })
+          this.flipX = player.pos.x < this.pos.x;
+          this.moveTo(
+            k.vec2(player.pos.x, player.pos.y + 12),
+            this.pursuitSpeed
+          );
+        });
+      },
+      setEvents() {
+        const player = k.get("player", { recursive: true })[0];
+
+        this.onCollide("player", () => {
+          player.hurt(1);
+          this.hurt(1);
+        });
+
+        this.onAnimEnd((anim) => {
+          if (anim === "explode") {
+            this.destroy();
+          }
+        });
+
+        this.on("explode", () => {
+          k.play("boom");
+          this.collisionIgnore = ["player"];
+          this.unuse("body");
+          this.play("explode");
+        });
+
+        this.onCollide("sword-hitbox", () => {
+          this.hurt(1);
+        });
+
+        this.on("hurt", () => {
+          if(this.hp() === 0){
+            this.trigger("explode");
+          }
+        });
+
+        this.onExitScreen(() => {
+          this.pos = initialPos})
       },
     },
   ]);

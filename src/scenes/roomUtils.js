@@ -29,7 +29,28 @@ export function setMapColliders(k, map, colliders) {
       continue;
     }
     if (collider.name === "boss-barrier") {
-      // TODO
+      const bossBarrier = map.add([
+        k.rect(collider.width, collider.height),
+        k.color(k.Color.fromHex("#eacfba")),
+        k.pos(collider.x, collider.y),
+        k.area({
+          collisionIgnore: ["collider"],
+        }),
+        k.opacity(0),
+        "boss-barrier", {
+          activate(){
+            k.tween(this.opacity, 0.3, 1, (val) => (this.opacity = val), k.easings.linear);
+            k.tween(k.camPos().x, collider.properties[0].value, 1, (val) => k.camPos(val, k.camPos().y), k.easings.linear);
+          },
+
+          async deactivate(playerPosX){
+            k.tween(this.opacity, 0, 1, (val) => (this.opacity = val), k.easings.linear);
+            await k.wait(1);
+            k.tween(k.camPos().x, playerPosX, 1, (val) => k.camPos(val, k.camPos().y), k.easings.linear);
+            k.destroy(this);
+          },
+        },
+      ])
       continue;
     }
 
