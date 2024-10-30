@@ -1,4 +1,4 @@
-import { state } from "../state/globalStateManager.js";
+import { state, statePropsEnum } from "../state/globalStateManager.js";
 
 export function setBackgroundColor(k, hexColorCode) {
   k.add([
@@ -51,18 +51,37 @@ export function setMapColliders(k, map, colliders) {
           },
         },
       ])
-      bossBarrrier.onCollide("player", async (player) => {
+      bossBarrier.onCollide("player", async (player) => {
         const currentState = state.current();
         if(currentState.isBossDefeated) {
-          state.set(statePropsEnum.playerIsInBossFight, false)
+          state.set(statePropsEnum.playerInBossFight, false)
           bossBarrier.deactivate(player.pos.x);
           return;
         }
 
         if(currentState.playerInBossFight) return;
 
-        
+        player.disableControls();
+        player.play("idle");
+        await k.tween(
+          player.pos.x,
+          player.pos.x + 25,
+          0.2,
+          (val) => (player.pos.x = val),
+          k.easings.linear
+        )
+        player.setControls();
       })
+
+      bossBarrier.onCollideEnd("player", () => {
+        const currentState = state.current();
+        if(currentState.playerInBossFight || currentState.isBossDefeated) return;
+
+        state.set(statePropsEnum.playerInBossFight, true);
+        bossBarrier.activate();
+        bossBarrier.use(k.body({isStatic: true}));
+      })
+
       continue;
     }
 
@@ -81,7 +100,7 @@ export function setMapColliders(k, map, colliders) {
 
 export function setCameraControls(k, player, map, roomData) {
   k.onUpdate(() => {
-    if (state.current().playerIsInBossFight) return;
+    if (state.current().playerInBossFight) return;
 
     if (map.pos.x + 160 > player.pos.x) {
       k.camPos(map.pos.x + 160, k.camPos().y);
