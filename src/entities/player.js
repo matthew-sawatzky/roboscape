@@ -1,4 +1,5 @@
 import { state, statePropsEnum } from "../state/globalStateManager.js";
+import { makeBlink } from "./entitySharedLogic.js";
 
 export function makePlayer(k) {
   return k.make([
