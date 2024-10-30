@@ -51,6 +51,18 @@ export function setMapColliders(k, map, colliders) {
           },
         },
       ])
+      bossBarrrier.onCollide("player", async (player) => {
+        const currentState = state.current();
+        if(currentState.isBossDefeated) {
+          state.set(statePropsEnum.playerIsInBossFight, false)
+          bossBarrier.deactivate(player.pos.x);
+          return;
+        }
+
+        if(currentState.playerInBossFight) return;
+
+        
+      })
       continue;
     }
 

@@ -20,12 +20,12 @@ export function makePlayer(k) {
         this.pos.x = x;
         this.pos.y = y;
       },
-      enablePassthrough(){
+      enablePassthrough() {
         this.onBeforePhysicsResolve((collision) => {
-            if(collision.target.is("passthrough") && this.isJumping()){
-                collision.preventResolution();
-            }
-        })
+          if (collision.target.is("passthrough") && this.isJumping()) {
+            collision.preventResolution();
+          }
+        });
       },
       setControls() {
         this.controlHandlers = [];
@@ -66,55 +66,68 @@ export function makePlayer(k) {
         );
 
         this.controlHandlers.push(
-            k.onKeyDown((key) => {
-                if (key === "left" && !this.isAttacking) {
-                    if ((this.curAnim() !== "run" && this.isGrounded())){
-                        this.play("run")
-                    }
-                    this.flipX = true;
-                    this.move(-this.speed, 0);
-                    return;
-                }
+          k.onKeyDown((key) => {
+            if (key === "left" && !this.isAttacking) {
+              if (this.curAnim() !== "run" && this.isGrounded()) {
+                this.play("run");
+              }
+              this.flipX = true;
+              this.move(-this.speed, 0);
+              return;
+            }
 
-                if (key === "right" && !this.isAttacking) {
-                  if (this.curAnim() !== "run" && this.isGrounded()) {
-                    this.play("run");
-                  }
-                  this.flipX = false;
-                  this.move(this.speed, 0);
-                  return;
-                }
-            })
-        )
+            if (key === "right" && !this.isAttacking) {
+              if (this.curAnim() !== "run" && this.isGrounded()) {
+                this.play("run");
+              }
+              this.flipX = false;
+              this.move(this.speed, 0);
+              return;
+            }
+          })
+        );
         this.controlHandlers.push(
-            k.onKeyRelease(() => {
-                if(
-                    this.curAnim() !== "idle" &&
-                    this.curAnim() !== "jump" &&
-                    this.curAnim() !== "attack" &&
-                    this.curAnim() !== "fall"
-                )
-                this.play("idle")
-            })
-        )
+          k.onKeyRelease(() => {
+            if (
+              this.curAnim() !== "idle" &&
+              this.curAnim() !== "jump" &&
+              this.curAnim() !== "attack" &&
+              this.curAnim() !== "fall"
+            )
+              this.play("idle");
+          })
+        );
       },
-      setEvents(){
+      disableControls() {
+        for (const handler of this.controlHandlers) {
+          handler.cancel();
+        }
+      },
+
+      respawnIfOutOfBounds(
+        boundValue,
+        destinationName,
+        previousSceneData = { exitName: "" }
+      ) {
+        // TO DO
+      },
+      setEvents() {
         this.onFall(() => {
-            this.play("fall")
-        })
+          this.play("fall");
+        });
 
         this.onFallOff(() => {
-            this.play("fall")
-        })
+          this.play("fall");
+        });
 
         this.onGround(() => {
-            this.play("idle")
-        })
+          this.play("idle");
+        });
 
         this.onHeadbutt(() => {
-            this.play("fall")
-        })
-      }
+          this.play("fall");
+        });
+      },
     },
   ]);
 }
