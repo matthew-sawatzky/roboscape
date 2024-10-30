@@ -1,3 +1,6 @@
+import { makeNotificationBox } from "../ui/notificationBox.js";
+import { makeBlink } from "./entitySharedLogic.js";
+
 export function makeBoss(k, initialPos) {
   return k.make([
     k.pos(initialPos),
@@ -112,10 +115,16 @@ export function makeBoss(k, initialPos) {
             k.play("notify");
             const notification = k.add(
                 makeNotificationBox(
-                    k, "you unlocked double jump!"
+                    k, "You have unlocked double jump!"
                 )
             )
             k.wait(3, () => notification.close())
+        })
+
+        this.on("hurt", () => {
+            makeBlink(k, this);
+            if(this.hp() > 0) return;
+            this.trigger("explode");
         })
       },
     },
