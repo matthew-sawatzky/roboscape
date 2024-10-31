@@ -37,29 +37,54 @@ export function setMapColliders(k, map, colliders) {
           collisionIgnore: ["collider"],
         }),
         k.opacity(0),
-        "boss-barrier", {
-          activate(){
-            k.tween(this.opacity, 0.3, 1, (val) => (this.opacity = val), k.easings.linear);
-            k.tween(k.camPos().x, collider.properties[0].value, 1, (val) => k.camPos(val, k.camPos().y), k.easings.linear);
+        "boss-barrier",
+        {
+          activate() {
+            k.tween(
+              this.opacity,
+              0.3,
+              1,
+              (val) => (this.opacity = val),
+              k.easings.linear
+            );
+            k.tween(
+              k.camPos().x,
+              collider.properties[0].value,
+              1,
+              (val) => k.camPos(val, k.camPos().y),
+              k.easings.linear
+            );
           },
 
-          async deactivate(playerPosX){
-            k.tween(this.opacity, 0, 1, (val) => (this.opacity = val), k.easings.linear);
+          async deactivate(playerPosX) {
+            k.tween(
+              this.opacity,
+              0,
+              1,
+              (val) => (this.opacity = val),
+              k.easings.linear
+            );
             await k.wait(1);
-            k.tween(k.camPos().x, playerPosX, 1, (val) => k.camPos(val, k.camPos().y), k.easings.linear);
+            k.tween(
+              k.camPos().x,
+              playerPosX,
+              1,
+              (val) => k.camPos(val, k.camPos().y),
+              k.easings.linear
+            );
             k.destroy(this);
           },
         },
-      ])
+      ]);
       bossBarrier.onCollide("player", async (player) => {
         const currentState = state.current();
-        if(currentState.isBossDefeated) {
-          state.set(statePropsEnum.playerInBossFight, false)
+        if (currentState.isBossDefeated) {
+          state.set(statePropsEnum.playerInBossFight, false);
           bossBarrier.deactivate(player.pos.x);
           return;
         }
 
-        if(currentState.playerInBossFight) return;
+        if (currentState.playerInBossFight) return;
 
         player.disableControls();
         player.play("idle");
@@ -69,18 +94,19 @@ export function setMapColliders(k, map, colliders) {
           0.2,
           (val) => (player.pos.x = val),
           k.easings.linear
-        )
+        );
         player.setControls();
-      })
+      });
 
       bossBarrier.onCollideEnd("player", () => {
         const currentState = state.current();
-        if(currentState.playerInBossFight || currentState.isBossDefeated) return;
+        if (currentState.playerInBossFight || currentState.isBossDefeated)
+          return;
 
         state.set(statePropsEnum.playerInBossFight, true);
         bossBarrier.activate();
-        bossBarrier.use(k.body({isStatic: true}));
-      })
+        bossBarrier.use(k.body({ isStatic: true }));
+      });
 
       continue;
     }
@@ -139,5 +165,42 @@ export function setCameraZones(k, map, cameras) {
         );
       }
     });
+  }
+}
+
+export function setExitZones(k, map, exits, destinationName) {
+  for (const exit of exits) {
+    const exitZone = map.add([
+      k.pos(exit.x, exit.y),
+      k.area({
+        shape: new k.Rect(k.vec2(0), exit.width, exit.height),
+        collisionIgnore: ["collider"],
+      }),
+      k.body({ isSensor: true }),
+      exit.name,
+    ]);
+
+    exitZone.onCollide("player", async()=>{
+      const background = k.add([
+        k.pos(-k.width(), 0),
+        k.rect(k.width(), k.height()),
+        k.color("#20214a"),
+      ])
+
+      await k.tween(
+        background.pos.x,
+        0,
+        0.3,
+        (val) => (background.pos.x = val),
+        k.easings.linear
+      )
+
+      if(exit.name === "final-exit"){
+        k.go("final-exit");
+        return;
+      }
+
+      k.go(destinationName, { exitName: exit.name })
+    })
   }
 }
