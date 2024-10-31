@@ -52,6 +52,7 @@ export function room1(k, roomData) {
       player.setControls();
       player.setEvents();
       player.enablePassthrough();
+      player.respawnIfOutOfBounds(1000, "room1");
       continue;
     }
 
