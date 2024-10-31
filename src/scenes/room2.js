@@ -16,7 +16,7 @@ export function room2(k, roomData, previousSceneData) {
   k.camPos(170, 100);
   k.setGravity(1000);
 
-  const roomLayers = roomdata.layers;
+  const roomLayers = roomData.layers;
   const map = k.add([k.pos(0, 0), k.sprite("room2")]);
 
   const colliders = [];
@@ -45,11 +45,11 @@ export function room2(k, roomData, previousSceneData) {
   }
   setMapColliders(k, map, colliders);
   setCameraZones(k, map, cameras);
-  setExitZones(k, map, exits, "room1");
 
   const player = map.add(makePlayer(k));
 
   setCameraControls(k, player, map, roomData);
+  setExitZones(k, map, exits, "room1");
 
   for (const position of positions) {
     if (
@@ -60,8 +60,6 @@ export function room2(k, roomData, previousSceneData) {
       player.setControls();
       player.setEvents();
       player.enablePassthrough();
-      player.respawnIfOutOfBounds(1000, "room1");
-      k.camPos(player.pos);
       continue;
     }
 
@@ -73,7 +71,7 @@ export function room2(k, roomData, previousSceneData) {
       player.setControls();
       player.setEvents();
       player.enablePassthrough();
-      player.respawnIfOutOfBounds(1000, "room1");
+      player.respawnIfOutOfBounds(1000, "room2", { exitName: "exit-2" });
       k.camPos(player.pos);
       continue;
     }

@@ -176,7 +176,7 @@ export function setExitZones(k, map, exits, destinationName) {
         shape: new k.Rect(k.vec2(0), exit.width, exit.height),
         collisionIgnore: ["collider"],
       }),
-      k.body({ isSensor: true }),
+      k.body({ isStatic: true }),
       exit.name,
     ]);
 

@@ -116,7 +116,7 @@ export function makeBoss(k, initialPos) {
           player.enableDoubleJump();
           k.play("notify");
           const notification = k.add(
-            makeNotificationBox(k, "You have unlocked double jump!")
+            makeNotificationBox(k, "You have unlocked a new ability!\nPress x twice to double jump!")
           );
           k.wait(3, () => notification.close());
         });

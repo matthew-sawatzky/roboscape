@@ -52,7 +52,7 @@ export function room1(k, roomData, previousSceneData) {
   const player = map.add(makePlayer(k));
 
   setCameraControls(k, player, map, roomData);
-  setExitZones(k, map, exits, "room1");
+  setExitZones(k, map, exits, "room2");
 
   for (const position of positions) {
     if (position.name === "player" && !previousSceneData.exitName) {
@@ -64,29 +64,29 @@ export function room1(k, roomData, previousSceneData) {
       continue;
     }
 
-    if(
+    if (
       position.name === "entrance-1" &&
       previousSceneData.exitName === "exit-1"
-    ){
+    ) {
       player.setPosition(position.x, position.y);
       player.setControls();
       player.setEvents();
       player.enablePassthrough();
       player.respawnIfOutOfBounds(1000, "room1");
-      k.camPos(player.pos)
+      k.camPos(player.pos);
       continue;
     }
 
-        if(
+    if (
       position.name === "entrance-2" &&
       previousSceneData.exitName === "exit-2"
-    ){
+    ) {
       player.setPosition(position.x, position.y);
       player.setControls();
       player.setEvents();
       player.enablePassthrough();
       player.respawnIfOutOfBounds(1000, "room1");
-      k.camPos(player.pos)
+      k.camPos(player.pos);
       continue;
     }
 
