@@ -131,14 +131,14 @@ export function makePlayer(k) {
 
         this.on("heal", () => {
           state.set(statePropsEnum.playerHp, this.hp());
-          // TODO health bar logic
+          healthBar.trigger("update");
         });
 
         this.on("hurt", () => {
           makeBlink(k, this);
           if (this.hp() > 0) {
             state.set(statePropsEnum.playerHp, this.hp());
-            //todo healthbar
+            healthBar.trigger("update");
             return;
           }
 

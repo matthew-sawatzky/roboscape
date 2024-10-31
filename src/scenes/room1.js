@@ -8,6 +8,7 @@ import { makePlayer } from "../entities/player.js";
 import { makeDrone } from "../entities/enemyDrone.js";
 import { state } from "../state/globalStateManager.js";
 import { makeBoss } from "../entities/enemyBoss.js";
+import { makeCartridge } from "../entities/healthCartridge.js";
 
 export function room1(k, roomData) {
   setBackgroundColor(k, "#a2aed5");
@@ -68,10 +69,12 @@ export function room1(k, roomData) {
     }
 
     if(position.type === "cartridge"){
-      map.add()
+      map.add(makeCartridge(k, k.vec2(position.x, position.y)));
     }
   }
 
-
+healthBar.setEvents();
+healthBar.trigger("update");
+k.add(healthBar);
 
 }
