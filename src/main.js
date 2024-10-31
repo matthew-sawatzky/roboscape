@@ -8,11 +8,11 @@ async function main() {
   const room1Data = await (await fetch("./maps/room1.json")).json();
   const room2Data = await (await fetch("./maps/room2.json")).json();
 
-  k.scene("room1", (previousSceneData) => {
+  k.scene("room1", (previousSceneData = {}) => {
     room1(k, room1Data, previousSceneData);
   });
 
-  k.scene("room2", (previousSceneData) => {
+  k.scene("room2", (previousSceneData = {}) => {
     room2(k, room2Data, previousSceneData);
   });
 }
@@ -24,7 +24,7 @@ k.scene("intro", () => {
   k.add(
     makeNotificationBox(
       k, 
-      "Escape the city!\nUse arrow keys to move, x to jump and z to attack.\nPress enter to start!"
+      "ROBOSCAPE\n\nEscape the city!\nUse arrow keys to move, x to jump and z to attack.\nPress enter to start!",
     )
   )
   k.onKeyPress("enter", () => {
