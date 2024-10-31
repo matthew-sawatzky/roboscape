@@ -9,6 +9,7 @@ import { makeDrone } from "../entities/enemyDrone.js";
 import { state } from "../state/globalStateManager.js";
 import { makeBoss } from "../entities/enemyBoss.js";
 import { makeCartridge } from "../entities/healthCartridge.js";
+import { healthBar } from "../ui/healthBar.js";
 
 export function room1(k, roomData) {
   setBackgroundColor(k, "#a2aed5");

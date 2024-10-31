@@ -1,4 +1,5 @@
-import { state } from "../state";
+import { state } from "../state/globalStateManager.js";
+import { k } from "../kaboomLoader.js";
 
 function makeHealthBar(k) {
   return k.make([
@@ -15,11 +16,12 @@ function makeHealthBar(k) {
       setEvents() {
         this.on("update", () => {
           const currentHp = state.current().playerHp;
+          this.frame = this.hpMapping[currentHp];
+
           if (currentHp === 0) {
             k.destroy(this);
             return;
           }
-          this.frame = this.hpMapping[currentHp];
         });
       },
     },

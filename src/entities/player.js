@@ -1,5 +1,6 @@
 import { state, statePropsEnum } from "../state/globalStateManager.js";
 import { makeBlink } from "./entitySharedLogic.js";
+import { healthBar } from "../ui/healthBar.js";
 
 export function makePlayer(k) {
   return k.make([
@@ -108,9 +109,13 @@ export function makePlayer(k) {
       respawnIfOutOfBounds(
         boundValue,
         destinationName,
-        previousSceneData = { exitName: "" }
+        previousSceneData = { exitName: null }
       ) {
-        // TO DO
+        k.onUpdate(() => {
+          if(this.pos.y > boundValue){
+            k.go(destinationName, previousSceneData);
+          }
+        })
       },
       setEvents() {
         this.onFall(() => {
